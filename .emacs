@@ -1,0 +1,11 @@
+; Fill column and fill column indicator mode.
+(setq-default fill-column 80)
+(require 'fill-column-indicator)
+(setq-default fci-rule-column 80)
+(setq fci-handle-truncate-lines nil)
+(add-hook 'after-change-major-mode-hook 'auto-fci-mode)
+(add-hook 'window-size-change-functions 'auto-fci-mode)
+(defun auto-fci-mode (&optional unused)
+  (if (> (frame-width) 80)
+      (fci-mode 1)
+    (fci-mode 0)))
