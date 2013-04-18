@@ -1,12 +1,40 @@
+; Packages
+
+(setq
+ package-archives
+ '(("gnu" . "http://elpa.gnu.org/packages/")
+   ("marmalade" . "http://marmalade-repo.org/packages/")
+   ("melpa" . "http://melpa.milkbox.net/packages/")))
+(package-initialize)
+
 ; Clipboard
 
 (global-set-key (kbd "C-c M-w") 'clipboard-kill-ring-save)
 (global-set-key (kbd "C-c C-w") 'clipboard-kill-region)
 (global-set-key (kbd "C-c C-y") 'clipboard-yank)
 
-; C++
+; Compilation
+
+(setq-default compile-command "make")
+(setq compilation-scroll-output 1)
+
+; File Extensions
 
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.as\\'" . javascript-mode))
+
+; C and C++
+
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+
+(c-add-style "mine"
+ '((c-offsets-alist . ((innamespace . 0)))))
+(add-hook
+ 'c-mode-common-hook
+ '(lambda ()
+    (c-set-style "mine")
+    (setq tab-width 2)
+    (setq c-basic-offset tab-width)))
 
 ; Fill Column
 
@@ -87,10 +115,12 @@
 (show-paren-mode)
 (column-number-mode)
 (setq-default show-paren-delay 0)
+(menu-bar-mode -1)
 
 ; Whitespace
 
 (setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
 (setq-default truncate-lines t)
 
 (global-set-key (kbd "C-x a r") 'align-regexp)
@@ -109,62 +139,23 @@
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 
-; (font-lock-add-keywords 'haskell-mode
-;  '(("\\(\\\\\\)\\s-" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?λ) nil))
-; 
-;    ("[^[:digit:][:space:]]\\(0\\)\\Sw" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?₀) nil))
-;    ("[^[:digit:][:space:]]\\(1\\)\\Sw" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?₁) nil))
-;    ("[^[:digit:][:space:]]\\(2\\)\\Sw" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?₂) nil))
-;    ("[^[:digit:][:space:]]\\(3\\)\\Sw" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?₃) nil))
-;    ("[^[:digit:][:space:]]\\(4\\)\\Sw" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?₄) nil))
-;    ("[^[:digit:][:space:]]\\(5\\)\\Sw" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?₅) nil))
-;    ("[^[:digit:][:space:]]\\(6\\)\\Sw" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?₆) nil))
-;    ("[^[:digit:][:space:]]\\(7\\)\\Sw" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?₇) nil))
-;    ("[^[:digit:][:space:]]\\(8\\)\\Sw" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?₈) nil))
-;    ("[^[:digit:][:space:]]\\(9\\)\\Sw" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?₉) nil))
-; 
-;    ("\\sw\\('\\)\\Sw" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?′) nil))
-;    ("\\sw\\(''\\)\\Sw" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?″) nil))
-;    ("\\sw\\('''\\)\\Sw" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?‴) nil))
-;    ("\\sw\\(''''\\)\\Sw" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?⁗) nil))
-; 
-;    ("\\S_\\(->\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?→) nil))
-;    ("\\S_\\(<-\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?←) nil))
-; 
-;    ("\\S_\\(=>\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?⇒) nil))
-;    ("\\S_\\(<=\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?≤) nil))
-;    ("\\S_\\(>=\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?≥) nil))
-; 
-;    ("\\S_\\(\\*\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?×) nil))
-;    ("\\S_<\\(\\*\\)>\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?∗) nil))
-;    ("\\S_\\(\\*\\)>\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?∗) nil))
-;    ("\\S_<\\(\\*\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?∗) nil))
-; 
-;    ("\\S_\\(<\\)\\*\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?‹) nil))
-;    ("\\S_\\*\\(>\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?›) nil))
-;    ("\\S_\\(<\\)\\$\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?‹) nil))
-;    ("\\S_\\$\\(>\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?›) nil))
-; 
-;    ("\\S_\\(>>\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?») nil))
-;    ("\\S_\\(>>=\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?↣) nil))
-;    ("\\S_\\(=<<\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?↢) nil))
-; 
-;    ("\\s-\\(\\.\\)\\s-" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?∘) nil))
-;    ("[^[:digit:][:space:]]\\(\\.\\)[^[:digit:][:space:]]" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?·) nil))
-; 
-;    ("\\S_\\(\\-\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?−) nil))
-;    ("\\S_\\(&&\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?∧) nil))
-;    ("\\S_\\(||\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?∨) nil))
-;    ("\\S_\\(\\+\\+\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?⧺) nil))
-;    ("\\S_<\\(\\+\\+\\)>\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?⧺) nil))
-; 
-;    ("\\S_\\(==\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?≡) nil))
-;    ("\\S_\\(/=\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?≢) nil))
-; 
-;    ("\\S_\\(--\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?—) nil))
-;    ("\\S_\\(\\.\\.\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?…) nil))
-; 
-;    ("\\S_\\(::\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?∷) nil))
-; 
-;    ("\\S_\\(<\\)\\s_+>\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?‹) nil))
-;    ("\\S_<\\s_+\\(>\\)\\S_" 0 (progn (compose-region (match-beginning 1) (match-end 1) ?›) nil))))
+; Faces
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-comment-tag ((t (:foreground "blue"))))
+ '(custom-variable-tag ((t (:foreground "blue" :weight bold))))
+ '(error ((t (:foreground "brightred" :weight bold))))
+ '(font-lock-comment-face ((t (:foreground "brightred"))))
+ '(font-lock-function-name-face ((t (:foreground "blue"))))
+ '(font-lock-keyword-face ((t (:foreground "brightmagenta"))))
+ '(font-lock-string-face ((t (:foreground "cyan"))))
+ '(font-lock-type-face ((t (:foreground "green"))))
+ '(font-lock-variable-name-face ((t (:foreground "yellow"))))
+ '(link-visited ((t (:inherit link :foreground "magenta"))))
+ '(minibuffer-prompt ((t (:foreground "blue"))))
+ '(shadow ((t (:foreground "red"))))
+ '(success ((t (:foreground "brightgreen" :weight bold)))))
