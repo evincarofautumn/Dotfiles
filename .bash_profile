@@ -3,9 +3,17 @@ if [ -f ~/.bashrc ]; then
    source ~/.bashrc
 fi
 
-# Ensure all cloned repositories are up to date.
-CLONED_REPOSITORIES=~/Projects/Cloned/*
-for repository in $CLONED_REPOSITORIES; do
-  echo "Pulling repository $repository..."
-  (cd "$repository"; git pull)
-done
+alias less='less -r'
+
+alias ga='git add'
+alias gb='git branch'
+alias gc='git commit'
+alias gd='git pull'
+alias gD='git diff'
+alias gf='git fetch'
+alias gl='git log'
+alias gm='git merge'
+alias go='git checkout'
+alias gr='git reset'
+alias gs='git status'
+alias gu='git push'
