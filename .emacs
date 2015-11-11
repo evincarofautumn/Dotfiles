@@ -1,5 +1,7 @@
 ; Packages
 
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+
 (setq
  package-archives
  '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -15,13 +17,32 @@
 
 ; Compilation
 
+(global-set-key (kbd "C-c C-c") 'compile)
+(global-set-key (kbd "C-c C-r") 'recompile)
+(global-set-key (kbd "M-n") 'next-error)
+(global-set-key (kbd "M-p") 'previous-error)
 (setq-default compile-command "make")
 (setq compilation-scroll-output 1)
+
+; Navigation
+(global-set-key (kbd "C-x p") 'ffap)
+(global-set-key (kbd "C-x <down>") 'windmove-down)
+(global-set-key (kbd "C-x <left>") 'windmove-left)
+(global-set-key (kbd "C-x <right>") 'windmove-right)
+(global-set-key (kbd "C-x <up>") 'windmove-up)
 
 ; File Extensions
 
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.as\\'" . javascript-mode))
+
+; Kitten
+
+(require 'kitten-mode)
+
+; Haskell
+
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 
 ; C and C++
 
@@ -38,16 +59,9 @@
 
 ; Fill Column
 
-(setq-default fill-column 80)
+(setq-default fill-column 60)
 (require 'fill-column-indicator)
-(setq-default fci-rule-column 80)
-(setq fci-handle-truncate-lines nil)
-(add-hook 'after-change-major-mode-hook 'auto-fci-mode)
-(add-hook 'window-size-change-functions 'auto-fci-mode)
-(defun auto-fci-mode (&optional unused)
-  (if (> (frame-width) 80)
-      (fci-mode 1)
-    (fci-mode 0)))
+(setq-default fci-rule-column 60)
 
 ; UUIDs
 
@@ -99,8 +113,6 @@
 
 ; Line Numbering
 
-(custom-set-variables '(linum-format 'dynamic))
-(custom-set-variables '(linum-format (quote "%7d|")))
 (setq-default linum-suffix "|")
 (defadvice linum-update-window (around linum-dynamic activate)
   (let* ((buffer-height (count-lines (point-min) (point-max)))
@@ -108,36 +120,37 @@
          (linum-format (concat "%" (number-to-string width) "d" linum-suffix)))
     ad-do-it))
 
-(global-linum-mode t)
-
 ; Global Minor Modes
 
 (show-paren-mode)
 (column-number-mode)
 (setq-default show-paren-delay 0)
 (menu-bar-mode -1)
+(ido-mode 1)
+(global-subword-mode 1)
+(global-font-lock-mode 0)
 
 ; Whitespace
 
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq-default truncate-lines t)
+(global-visual-line-mode 1)
+(setq-default adaptive-wrap-extra-indent 3)
 
 (global-set-key (kbd "C-x a r") 'align-regexp)
-(global-set-key (kbd "C-x M-s") 'sort-lines)
-
-; Haskell
-
-(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
-(setq haskell-indent-offset 2)
+(global-set-key (kbd "C-x s") 'sort-lines)
+(global-set-key (kbd "DEL") 'backward-delete-char)
 
 ; Configuration
 
-(set-frame-font "DejaVu Sans Mono 12")
+(set-default-font "Source Code Pro 14")
+(setq-default initial-scratch-message "")
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
+(setq initial-scratch-message nil)
+(setq inhibit-splash-screen t)
 
 ; Faces
 
@@ -149,13 +162,24 @@
  '(custom-comment-tag ((t (:foreground "blue"))))
  '(custom-variable-tag ((t (:foreground "blue" :weight bold))))
  '(error ((t (:foreground "brightred" :weight bold))))
- '(font-lock-comment-face ((t (:foreground "brightred"))))
- '(font-lock-function-name-face ((t (:foreground "blue"))))
- '(font-lock-keyword-face ((t (:foreground "brightmagenta"))))
+ '(font-lock-comment-face ((t (:foreground "slateblue"))))
+ '(font-lock-function-name-face ((t (:foreground "black"))))
+ '(font-lock-keyword-face ((t (:foreground "brightblack"))))
  '(font-lock-string-face ((t (:foreground "cyan"))))
- '(font-lock-type-face ((t (:foreground "green"))))
- '(font-lock-variable-name-face ((t (:foreground "yellow"))))
+ '(font-lock-type-face ((t (:foreground "black"))))
+ '(font-lock-variable-name-face ((t (:foreground "black"))))
  '(link-visited ((t (:inherit link :foreground "magenta"))))
- '(minibuffer-prompt ((t (:foreground "blue"))))
+ '(minibuffer-prompt ((t (:foreground "white"))))
  '(shadow ((t (:foreground "red"))))
  '(success ((t (:foreground "brightgreen" :weight bold)))))
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(c-backspace-function (quote backward-delete-char))
+ '(dired-use-ls-dired nil)
+ '(ido-mode (quote both) nil (ido))
+ '(ido-use-faces nil)
+ '(linum-format (quote "%7d|")))
