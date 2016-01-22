@@ -224,6 +224,8 @@ i.e. change right window to bottom, or change bottom window to right."
 (global-set-key (kbd "C-c d h") 'git-gutter:popup-hunk)
 (global-set-key (kbd "C-c d r") 'git-gutter:revert-hunk)
 (global-set-key (kbd "C-c d s") 'git-gutter:stage-hunk)
+(global-set-key (kbd "C-c d n") 'git-gutter:next-hunk)
+(global-set-key (kbd "C-c d p") 'git-gutter:previous-hunk)
 
 ; Configuration
 
