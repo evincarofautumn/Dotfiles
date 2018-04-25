@@ -41,6 +41,7 @@
 ; Haskell
 
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+(add-hook 'haskell-mode-hook 'intero-mode)
 
 ; C and C++
 
@@ -49,7 +50,8 @@
   (setq indent-tabs-mode t)
   (setq tab-width 4)
   (setq c-basic-offset tab-width)
-  (global-auto-complete-mode))
+  ; (global-auto-complete-mode)
+  )
 
 ; C#
 
@@ -174,6 +176,21 @@ Version 2015-06-11"
       (when (and (buffer-file-name) (file-exists-p (buffer-file-name)) (not (buffer-modified-p)))
         (revert-buffer t t t)))))
 
+(defun rename-file-and-buffer (new-name)
+  "Renames an open file."
+  (interactive "sNew name: ")
+  (let ((name (buffer-name))
+        (filename (buffer-file-name)))
+    (if (not filename)
+        (message "Buffer '%s' is not visiting a file." name)
+      (if (get-buffer new-name)
+          (message "Already visiting a file named '%s'." new-name)
+        (progn
+          (rename-file filename new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil))))))
+
 ; Frames
 
 (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
@@ -249,31 +266,30 @@ i.e. change right window to bottom, or change bottom window to right."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(cperl-array-face ((t nil)))
+ '(cperl-nonoverridable-face ((t nil)))
  '(custom-comment-tag ((t (:foreground "blue"))))
  '(custom-variable-tag ((t (:foreground "blue" :weight bold))))
  '(error ((t (:foreground "brightred" :weight bold))))
- '(cperl-array-face ((t nil)))
- '(cperl-nonoverridable-face ((t nil)))
  '(font-lock-builtin-face ((t (:foreground "brightblack"))))
- '(font-lock-comment-face ((t (:foreground "slateblue"))))
+ '(font-lock-comment-face ((t (:foreground "gray55"))))
  '(font-lock-constant-face ((t (:foreground "black"))))
  '(font-lock-doc-face ((t (:inherit font-lock-comment-face))))
  '(font-lock-function-name-face ((t (:foreground "black"))))
- '(font-lock-keyword-face ((t (:foreground "brightblack"))))
- '(font-lock-string-face ((t (:foreground "cyan"))))
+ '(font-lock-keyword-face ((t (:foreground "black" :weight bold))))
+ '(font-lock-string-face ((t (:foreground "gray55"))))
  '(font-lock-type-face ((t (:foreground "black"))))
  '(font-lock-variable-name-face ((t (:foreground "black"))))
- '(link-visited ((t (:inherit link :foreground "magenta"))))
- '(minibuffer-prompt ((t (:foreground "white"))))
- '(shadow ((t (:foreground "red"))))
- '(success ((t (:foreground "brightgreen" :weight bold))))
-
  '(git-gutter:added ((t (:background "green" :foreground "brightwhite" :weight bold))))
  '(git-gutter:deleted ((t (:background "red" :foreground "brightwhite" :weight bold))))
  '(git-gutter:modified ((t (:background "blue" :foreground "brightwhite" :weight bold))))
  '(hl-line ((t nil)))
+ '(link-visited ((t (:inherit link :foreground "magenta"))))
+ '(minibuffer-prompt ((t (:foreground "brightblack"))))
  '(mode-line ((t (:background "grey75" :foreground "black" :box (:line-width -1 :style released-button)))))
  '(mode-line-inactive ((t (:inherit mode-line :background "grey95" :foreground "grey40" :box (:line-width -1 :color "grey75") :weight light))))
+ '(shadow ((t (:foreground "red"))))
+ '(success ((t (:foreground "brightgreen" :weight bold))))
  '(whitespace-indentation ((t (:foreground "lightgray"))))
  '(whitespace-line ((t nil)))
  '(whitespace-space ((t (:foreground "lightgray"))))
@@ -293,19 +309,26 @@ i.e. change right window to bottom, or change bottom window to right."
  '(ac-auto-show-menu t)
  '(c-auto-align-backslashes nil)
  '(c-backspace-function (quote backward-delete-char))
- '(dired-use-ls-dired nil)
- '(ido-mode (quote both) nil (ido))
- '(ido-use-faces nil)
- '(linum-format (quote "%7d|"))
  '(c-basic-offset 4)
  '(c-default-style (quote ((c-mode . "k&r") (csharp-mode . "linux"))))
+ '(c-offsets-alist
+   (quote
+    ((arglist-intro . +)
+     (arglist-cont . 0)
+     (arglist-cont-nonempty . 0)
+     (arglist-close . 0))))
+ '(c-syntactic-indentation t)
+ '(dired-use-ls-dired nil)
  '(git-gutter:modified-sign "*")
  '(git-gutter:separator-sign nil)
  '(global-hl-line-sticky-flag nil)
  '(global-whitespace-mode nil)
  '(hl-line-sticky-flag t)
+ '(ido-mode (quote both) nil (ido))
+ '(ido-use-faces nil)
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
+ '(linum-format (quote "%7d|"))
  '(mode-line-format
    (quote
     ("%b:%l:%c (%m) [%+] "
@@ -315,8 +338,17 @@ i.e. change right window to bottom, or change bottom window to right."
  '(truncate-lines t)
  '(whitespace-display-mappings
    (quote
-    ((space-mark 32 [183] [46])
-     (space-mark 160 [164] [95])
-     (newline-mark 10 [36 10])
-     (tab-mark 9 [183 9] [187 9] [92 9]))))
+    ((space-mark 32
+                 [183]
+                 [46])
+     (space-mark 160
+                 [164]
+                 [95])
+     (newline-mark 10
+                   [36 10])
+     (tab-mark 9
+               [183 9]
+               [187 9]
+               [92 9]))))
  '(whitespace-style (quote (face tabs spaces tab-mark))))
+(put 'set-goal-column 'disabled nil)
