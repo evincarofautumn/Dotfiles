@@ -1,10 +1,12 @@
-# Source general bash settings.
+# Bash
 if [ -f ~/.bashrc ]; then
    source ~/.bashrc
 fi
 
-alias less='less -r'
+# Homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
+# Git
 alias ga='git add'
 alias gb='git branch'
 alias gc='git commit'
@@ -17,3 +19,7 @@ alias go='git checkout'
 alias gr='git reset'
 alias gs='git status'
 alias gu='git push'
+
+# Less
+LESS="-iRS"
+export LESS
