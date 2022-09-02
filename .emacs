@@ -3,10 +3,10 @@
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 
 (require 'package)
-(package-initialize)
 (when (< emacs-major-version 24)
   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
 
 ; Clipboard
 
@@ -81,9 +81,8 @@ Version 2015-06-11"
 
 ; Fill Column
 
-(setq-default fill-column 60)
-(require 'fill-column-indicator)
-(setq-default fci-rule-column 60)
+(setq-default fill-column 64)
+(global-display-fill-column-indicator-mode)
 
 ; UUIDs
 
@@ -163,6 +162,7 @@ Version 2015-06-11"
 (global-visual-line-mode 1)
 (setq-default adaptive-wrap-extra-indent 3)
 
+(require 'adaptive-wrap)
 (add-hook 'visual-line-mode-hook 'my-enable-adaptive-wrap)
 (defun my-enable-adaptive-wrap ()
   (adaptive-wrap-prefix-mode 1))
@@ -194,7 +194,7 @@ Version 2015-06-11"
 ; Frames
 
 (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
-(set-face-background 'vertical-border "transparent")
+(set-face-background 'vertical-border "unspecified-bg")
 (set-display-table-slot standard-display-table 0 (make-glyph-code ?…))
 
 (defun window-toggle-split-direction ()
@@ -246,7 +246,6 @@ i.e. change right window to bottom, or change bottom window to right."
 
 ; Configuration
 
-(set-default-font "Source Code Pro 14")
 (setq-default initial-scratch-message "")
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
@@ -308,15 +307,14 @@ i.e. change right window to bottom, or change bottom window to right."
  ;; If there is more than one, they won't work right.
  '(ac-auto-show-menu t)
  '(c-auto-align-backslashes nil)
- '(c-backspace-function (quote backward-delete-char))
+ '(c-backspace-function 'backward-delete-char)
  '(c-basic-offset 4)
- '(c-default-style (quote ((c-mode . "k&r") (csharp-mode . "linux"))))
+ '(c-default-style '((c-mode . "k&r") (csharp-mode . "linux")))
  '(c-offsets-alist
-   (quote
-    ((arglist-intro . +)
+   '((arglist-intro . +)
      (arglist-cont . 0)
      (arglist-cont-nonempty . 0)
-     (arglist-close . 0))))
+     (arglist-close . 0)))
  '(c-syntactic-indentation t)
  '(dired-use-ls-dired nil)
  '(git-gutter:modified-sign "*")
@@ -324,21 +322,18 @@ i.e. change right window to bottom, or change bottom window to right."
  '(global-hl-line-sticky-flag nil)
  '(global-whitespace-mode nil)
  '(hl-line-sticky-flag t)
- '(ido-mode (quote both) nil (ido))
+ '(ido-mode 'both nil (ido))
  '(ido-use-faces nil)
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
- '(linum-format (quote "%7d|"))
- '(mode-line-format
-   (quote
-    ("%b:%l:%c (%m) [%+] "
-     (:eval
-      (make-string 1000 9472)))))
+ '(linum-format '"%7d|")
+ '(mode-line-format '("%b:%l:%c (%m) [%+] " (:eval (make-string 1000 9472))))
+ '(package-selected-packages
+   '(hide-mode-line git-gutter git-gutter+ flx-ido adaptive-wrap))
  '(tab-width 4)
  '(truncate-lines t)
  '(whitespace-display-mappings
-   (quote
-    ((space-mark 32
+   '((space-mark 32
                  [183]
                  [46])
      (space-mark 160
@@ -349,6 +344,6 @@ i.e. change right window to bottom, or change bottom window to right."
      (tab-mark 9
                [183 9]
                [187 9]
-               [92 9]))))
- '(whitespace-style (quote (face tabs spaces tab-mark))))
+               [92 9])))
+ '(whitespace-style '(face tabs spaces tab-mark)))
 (put 'set-goal-column 'disabled nil)
