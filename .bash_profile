@@ -21,5 +21,9 @@ alias gs='git status'
 alias gu='git push'
 
 # Less
-LESS="-iRS"
-export LESS
+export LESS="-iRS"
+
+# Path
+PATH="/opt/homebrew/opt/llvm@12/bin:$PATH"
+PATH="$HOME/bin:$PATH"
+export PATH
